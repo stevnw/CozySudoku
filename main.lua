@@ -73,7 +73,12 @@ function love.load()
     currentTrackIndex = math.random(#track_paths)
     source = love.audio.newSource(track_paths[currentTrackIndex], "stream")
     source:setLooping(false) 
-    love.audio.setVolume(0.5) 
+    love.audio.setVolume(0.5)
+    
+    -- New variables for muting
+    is_muted = false
+    original_volume = love.audio.getVolume()
+
     love.audio.play(source)
 end
 
@@ -613,6 +618,15 @@ function love.keypressed(key)
             current_bg_color = generate_pastel_color() 
         else 
             love.event.quit() 
+        end
+    elseif key == "m" then -- Handle mute key
+        if is_muted then
+            love.audio.setVolume(original_volume) -- Restore original volume
+            is_muted = false
+        else
+            original_volume = love.audio.getVolume() -- Save current volume
+            love.audio.setVolume(0) -- Mute
+            is_muted = true
         end
     end
 
